@@ -5,7 +5,7 @@ El código y los datos generados con IA deben reconocerlo en su texto descriptiv
 
 | Parte del proyecto | ¿Se usó IA? | Cómo |
 |---|---|---|
-| `index.html` (interfaz, mapa, detección de cambios, índices, exportación) | Sí | Generado con Claude (Anthropic) a partir de la idea de Darío Proaño (autor) y de las indicaciones de Anthony Cisneros (rxn1n), diseño y código, y de los coautores. Revisado y probado con pruebas automáticas. El reconocimiento está en el comentario inicial del archivo y en la etiqueta `<meta name="ai-generated">`. |
+| `index.html` (interfaz, mapa, detección de cambios, índices, exportación) | Sí | Generado con Claude (Anthropic) a partir de la propuesta de Darío Proaño (ideador y director del proyecto) y de las indicaciones de Anthony Cisneros (rxn1n), diseño y código, y de los coautores. Revisado y probado con pruebas automáticas. El reconocimiento está en el comentario inicial del archivo y en la etiqueta `<meta name="ai-generated">`. |
 | Calibración del agua en el modo en vivo | Sí, con verificación | La regla (píxel oscuro y azulado) se midió el 12 nov 2026 sobre la imagen NISAR real de Guayaquil servida por NASA GIBS. |
 | README, guía, resumen técnico y ficha técnica | Sí | Redactados con Claude; aprobados por el autor. |
 | Datos satelitales y de pronóstico | No | Se leen en vivo de NASA (CMR, GIBS) y Open-Meteo, sin modificación por IA. |

@@ -2,6 +2,11 @@
 
 Fechas en hora de Ecuador. Todo el código se generó con asistencia de IA (ver `USO_DE_IA.md`).
 
+## 1.5.2 · 16 nov 2026 · autoría y reintentos ante cortes de NASA GIBS
+
+- **Autoría igual a la del repositorio de Darío Proaño** (`Dariuxcks/Illari`): **ideador y director del proyecto: Darío Proaño** · **diseño y código: Anthony Cisneros a.k.a rxn1n** · coautores: María Teresa Loor, Manuela Palacios, Mateo Caicedo, Ana Belén Manzano. Actualizado en la app, metadatos, exportaciones, `AUTHORS.md`, `README.md`, `LICENSE` y `USO_DE_IA.md`.
+- **Reintentos cuando NASA GIBS corta la conexión.** El 16 nov 2026, GIBS dejaba sin respuesta cerca de la mitad de las peticiones WMS (el navegador las ve como «Failed to fetch»). ILLARI solo reintentaba cuando NASA respondía con un error; ahora también reintenta esos cortes (hasta 3 intentos), salvo sin internet.
+
 ## 1.5.1 · 15 nov 2026 · satélites VIIRS elegidos automáticamente
 
 - **Los focos de calor VIIRS ya no dependen de un satélite fijo.** Para cada fecha, ILLARI pregunta a NASA GIBS qué plataformas tienen datos publicados (prioridad Suomi NPP → NOAA-20 → NOAA-21) y usa las dos primeras que respondan.

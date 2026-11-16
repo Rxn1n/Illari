@@ -1,10 +1,10 @@
 # Autores de ILLARI
 
-## Idea · autor
+## Ideador y director del proyecto
 
 **Darío Proaño**
 
-Autor de la idea de ILLARI.
+Responsable de la concepción original y la dirección general del proyecto ILLARI.
 
 ## Diseño y código
 
