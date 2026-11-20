@@ -21,6 +21,8 @@ The [Spanish dashboard](https://rxn1n.github.io/Illari/) also offers daily NASA 
 
 El tablero en vivo explora indicios de cambio y permite consultar pronósticos. El visor del caso contiene mediciones GCOV ya procesadas y se puede abrir sin conexión una vez descargado. [Guía técnica del tablero](GUIA_TECNICA.md) · [Modelos predictivos y sus límites](MODELOS_PREDICTIVOS.md)
 
+**Version 1.6.0 / Versión 1.6.0.** This repository merges Darío Proaño's fork [Dariuxcks/Illari](https://github.com/Dariuxcks/Illari) (the NISAR case study, strict SAR pair checks, model documentation) with the live features of 1.5.x (automatic VIIRS satellites, retries when NASA GIBS drops connections). It also skips NISAR dates that NASA's catalogue lists before GIBS publishes their imagery. Este repositorio une el fork de Darío Proaño con las funciones en vivo de 1.5.x; detalles en [CHANGELOG.md](CHANGELOG.md).
+
 ### Credits and development history / Autoría y cronología
 
 Project concept and direction: Darío Proaño. Design and code: Anthony Cisneros ([rxn1n](https://github.com/Rxn1n)). Coauthors: María Teresa Loor, Manuela Palacios, Mateo Caicedo and Ana Belén Manzano. [Authors](AUTHORS.md) · [MIT licence](LICENSE).

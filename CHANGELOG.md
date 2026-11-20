@@ -6,6 +6,16 @@
 
 Fechas en hora de Ecuador. Todo el código se generó con asistencia de IA (ver `USO_DE_IA.md`).
 
+## 1.6.0 · 20 nov 2026 · fusión con el fork de Darío Proaño y Observado funcional otra vez
+
+- **Base: el fork [`Dariuxcks/Illari`](https://github.com/Dariuxcks/Illari)** de Darío Proaño (ideador y director del proyecto). Se incorporan su caso NISAR de Guayaquil (7–19 oct 2026, visor calibrado en español e inglés, presentación y guía en `docs/demostracion/`), `MODELOS_PREDICTIVOS.md`, `GUIA_TECNICA.md`, los casos NISAR/OPERA, las herramientas de reproducción en `tools/` y sus pruebas.
+- **Del fork, en la app:** compatibilidad SAR estricta (mismo track, dirección, frame, polarizaciones y madurez BETA/PROVISIONAL/VALIDATED leída de la colección CMR); estado «Comparación SAR no disponible» en vez de escena simulada; aviso de «Índice parcial» cuando faltan lluvia, caudal o marea; contraste NISAR–OPERA con desfase de fechas explícito; filtro de altitud con fuente de relieve identificada; lenguaje de corroboración en lugar de «confirmado».
+- **De 1.5.x, conservado:** satélites VIIRS elegidos automáticamente (NOAA-20/NOAA-21 tras la baja de Suomi NPP), capa «Focos VIIRS» por WMS y reintentos cuando NASA GIBS corta la conexión.
+- **Corrección (por qué no funcionaba):** NASA CMR lista una pasada NISAR días antes de que GIBS publique su mosaico. El 20 nov, CMR ya tenía la del 12 nov pero GIBS la devolvía vacía, y la app comparaba contra una imagen sin píxeles («Las imágenes no tienen píxeles válidos en común»). Ahora esa fecha se marca como «aún no publicada» y se usa el par comparable anterior, con una nota en la procedencia; la siguiente sincronización vuelve a intentarlo.
+- **Más eficiente:** GIBS sirve un mosaico diario; los frames de una misma fecha comparten imagen y ahora se descarga una sola vez.
+- Verificado en vivo el 20 nov 2026: Guayaquil «Situación actual» 7 → 19 oct (130,6 km² de agua en ambas fechas; contraste con OPERA); Quito 29 oct → 10 nov (7 focos VIIRS); Casitagua 11 → 23 sep (DIST 401 ha junto a focos); Estimado de ambas ciudades; sin errores de consola. Pruebas `node --test tools/test_observado.cjs`: 3 de 3.
+- Con las reglas del fork, las tormentas del 24 y 26 oct en Guayaquil quedan **bloqueadas a propósito**: la pasada del 19 oct es PROVISIONAL y la del 31 oct VALIDATED (y el 24 oct NASA unió dos tracks).
+
 ## 1.5.2 · 16 nov 2026 · autoría y reintentos ante cortes de NASA GIBS
 
 - **Autoría igual a la del repositorio de Darío Proaño** (`Dariuxcks/Illari`): **ideador y director del proyecto: Darío Proaño** · **diseño y código: Anthony Cisneros a.k.a rxn1n** · coautores: María Teresa Loor, Manuela Palacios, Mateo Caicedo, Ana Belén Manzano. Actualizado en la app, metadatos, exportaciones, `AUTHORS.md`, `README.md`, `LICENSE` y `USO_DE_IA.md`.
