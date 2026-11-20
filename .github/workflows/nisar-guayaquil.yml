@@ -1,0 +1,37 @@
+name: Verificar adquisiciones NISAR Guayaquil
+on:
+  push:
+    paths:
+      - 'tools/nisar_guayaquil_cmr.py'
+      - 'tools/nisar_guayaquil_gibs.py'
+      - 'tools/sondear_opera_dswx.py'
+      - '.github/workflows/nisar-guayaquil.yml'
+  workflow_dispatch:
+jobs:
+  consultar-cmr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verificar sintaxis
+        run: python -m py_compile tools/nisar_guayaquil_cmr.py
+      - name: Consultar escenas oficiales NASA CMR
+        run: python tools/nisar_guayaquil_cmr.py
+      - name: Instalar Pillow para visualizar mosaicos GIBS
+        run: python -m pip install --disable-pip-version-check pillow
+      - name: Generar imágenes radar NISAR GIBS antes/después
+        run: python tools/nisar_guayaquil_gibs.py
+      - name: Sondear mapas OPERA DSWx-S1 y fechas disponibles
+        run: python tools/sondear_opera_dswx.py
+      - name: Publicar reporte de consulta
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-nisar-guayaquil-cmr
+          path: reports/
+          if-no-files-found: warn
