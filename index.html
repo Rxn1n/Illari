@@ -1450,10 +1450,10 @@ function pairForEvent(acqs, ev) {
   if (!ev) candidates.reverse();
   const eventDates = new Set();
   for (const B of candidates) {
-    if (ev && acqs[B].date < ev) continue;
+    if (acqs[B].gibsEmpty || ev && acqs[B].date < ev) continue;
     if (ev && eventDates.add(acqs[B].date).size > 5) break; // misma ventana de cinco fechas posteriores
     for (let A = B - 1; A >= 0; A--) {
-      if (ev && acqs[A].date >= ev || acqs[A].date >= acqs[B].date) continue;
+      if (acqs[A].gibsEmpty || ev && acqs[A].date >= ev || acqs[A].date >= acqs[B].date) continue;
       if (compat(acqs[A], acqs[B]).ok) return [A, B];
     }
   }
@@ -1461,9 +1461,14 @@ function pairForEvent(acqs, ev) {
 }
 async function ensureAcq(O, i) {
   const a = O.acqs[i]; if (i < 0 || !a) throw new Error('Sin adquisición SAR válida seleccionada.'); if (a.rgba || a.prod !== 'GIBS') return; const bb = O.bbox, [x0, y0] = merc(bb.s, bb.w), [x1, y1] = merc(bb.n, bb.e), W = 900, H = Math.round(W * (y1 - y0) / (x1 - x0));
+  // GIBS publica un mosaico diario: los frames de una misma fecha comparten imagen, así que se descarga una sola vez.
+  const memo = O.gcache || (O.gcache = {}); if (memo[a.date]) { Object.assign(a, memo[a.date]); return; }
   let url = wmsUrl(NISAR_LAYER, a.date, bb, W, H), img; try { img = await fetchPixels(url); } catch (e) { url = wmsUrl(NISAR_LAYER, a.date, bb, 600, Math.round(600 * H / W)); img = await fetchPixels(url); }
   const g = sampleToGrid(img, bb, O.NX, O.NY);
-  a.rgba = g.rgba; a.cov = g.cov; a.url = url; a.layer = NISAR_LAYER; a.resp = { w: img.w, h: img.h, t: new Date().toISOString() };
+  // El catálogo CMR lista una pasada días antes de que GIBS publique su mosaico: entonces la imagen llega vacía (transparente).
+  // Esa fecha se marca y se usa el par comparable anterior, en lugar de comparar contra una imagen sin datos.
+  if (g.cov < 0.05) { for (const x of O.acqs) if (x.prod === 'GIBS' && x.date === a.date) x.gibsEmpty = true; throw new Error(`NASA GIBS aún no publica la imagen NISAR del ${fmtDate(a.date, 'y')} (el catálogo ya la lista)`); }
+  memo[a.date] = { rgba: g.rgba, cov: g.cov, url, layer: NISAR_LAYER, resp: { w: img.w, h: img.h, t: new Date().toISOString() } }; Object.assign(a, memo[a.date]);
 }
 async function loadObsLive(hz, keepEv) {
   const initial = S.obs[hz], revision = initial?.selectionRequest, event = initial?.event;
@@ -1486,6 +1491,8 @@ async function loadObsLive(hz, keepEv) {
     } else {
       // Si NASA GIBS falla con una fecha, se prueba el siguiente par comparable más reciente (hasta 3) en vez de caer a la simulación.
       for (let tries = 0; ; tries++) { try { await Promise.all([ensureAcq(O, A), ensureAcq(O, B)]); O.A = A; O.B = B; break; } catch (e) {
+        const empty = O.acqs[A]?.gibsEmpty || O.acqs[B]?.gibsEmpty;
+        if (empty && tries < 4) { const [A2, B2] = pairForEvent(O.acqs, evDate(ev)); if (A2 >= 0 && B2 >= 0) { A = A2; B = B2; O.usedFallback = true; O.notes.push(e.message + ': se usa el par comparable anterior.'); continue; } }
         if (tries >= 2) { O.A = A; O.B = B; O.gibsMsg = `NASA GIBS no entregó la imagen NISAR (falla pasajera de su servidor: ${e.message.slice(0, 90)}). ILLARI reintentará en la próxima sincronización; también puedes pulsar «Actualizar» o elegir otras fechas.`; O.gibsFail = true; break; }
         const sub = O.acqs.slice(0, B); const [A2, B2] = pairForEvent(sub, evDate(ev)); if (A2 < 0 || B2 < 0 || B2 >= B || A2 === B2) { tries = 2; continue; } A = A2; B = B2; O.usedFallback = true; O.notes.push('Se usó un par anterior porque NASA GIBS no entregó una de las imágenes más recientes.'); } }
       if (superseded()) return;
